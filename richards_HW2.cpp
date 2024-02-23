@@ -2,9 +2,24 @@
 #include <cstdlib>
 #include <ctime>
 
+/*************************************************************************
+** Author : Ralph Richards
+** Program : hw2, q1
+** Date Created : February 22, 2024
+** Date Last Modified : February 23, 2024
+** Usage : No command line arguments
+**
+** Problem:
+Create a "checkbook" using a struct and class that doubles in size when needed
+Write out small checks to see this used
+Generate random memos
+Display all checks using an overloaded operator
+
+*************************************************************************/
+
+
 using namespace std;
 
-// should this have been located somewhere else or was this fine?
 const int N = 100;
 
 // Create check struct
@@ -62,7 +77,7 @@ public:
         balance += amount;
     }
 
-    // display all checks
+    // display all checks with overloaded operator
     void displayChecks(){
         for (int i = numOfChecks - 1; i >= 0; i--) {
         cout << checkArray[i] << endl;
