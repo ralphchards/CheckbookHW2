@@ -1,10 +1,11 @@
 #include <iostream>
 #include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
 // should this have been located somewhere else or was this fine?
-const int N = 5;
+const int N = 100;
 
 // Create check struct
 struct Check{
@@ -12,6 +13,15 @@ struct Check{
     int CheckNum;
     string CheckMemo;
     float CheckAmount;
+
+    bool operator>(float value) const {
+        return CheckAmount > value;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const Check& check) {
+        os << "Check Number: " << check.CheckNum << ", Memo: " << check.CheckMemo << ", Amount: $" << check.CheckAmount;
+        return os;
+    }
 };
 
 // Create checkbook class
@@ -54,17 +64,18 @@ public:
 
     // display all checks
     void displayChecks(){
-        for(int i = numOfChecks-1; i >= 0; i--){
-            cout << "\nCheck " << checkArray[i].CheckNum +1 << endl; // the +1 is just for readability because Check 0 sounds dumb
-            cout << "Memo: " << checkArray[i].CheckMemo << endl;
-            cout << "Amount: " << checkArray[i].CheckAmount << endl;
+        for (int i = numOfChecks - 1; i >= 0; i--) {
+        cout << checkArray[i] << endl;
         }
     }
+
     //string for selecting random memo
     string dumbMemos[3] = {"purchasing a ryzen 5800x3d", "lottery ticket", "chick-fil-a"};
 
     // write check function
     bool writeCheck(float amount){
+        cout << "\nCurrent number of checks: " << numOfChecks << endl;
+        cout << "Current balance: $" << balance << endl;
 
         if (numOfChecks >= checkBookSize / 2) {
             // if half of the check book is used, double the size of the array
@@ -73,9 +84,10 @@ public:
             for (int i = 0; i < numOfChecks; i++) {
                 newCheckArray[i] = checkArray[i];
             }
+            chkPtr = newCheckArray;
             checkBookSize = newSize;
 
-            cout << "Warning: Check book is half full. A new check book has been ordered. " << newSize << endl;
+            cout << "\nWarning: Check book is half full. A new check book has been ordered. " << newSize << endl;
         }
 
         if(amount <= balance){
@@ -92,16 +104,33 @@ public:
 
 };
 
+    void checkTest(CheckBook& checkBook) {
+
+    // write checks until balance is exhausted
+    while (checkBook.balance > 0) {
+        if (checkBook.writeCheck(25)) {
+            cout << "\nCheck of amount $" << 25 << " successfully written." << endl;
+            checkBook.balance -= 25;
+        } else {
+            cout << "Insufficient balance to write check of amount $" << 25 << "." << endl;
+            break;
+        }
+
+        cout << "displaying all checks:" << endl;
+        checkBook.displayChecks();
+        }
+    }
+
+
 int main(){
+    //random seed
+    srand(time(0));
+
     CheckBook cb1; // create checkbook constructor
 
     cb1.deposit(500); // deposit 500
 
     // test checks
-    cb1.writeCheck(30);
-    cb1.writeCheck(60);
-    cb1.writeCheck(100);
+    checkTest(cb1);
 
-    // print all checks
-    cb1.displayChecks();
 }
